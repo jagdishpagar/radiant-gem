@@ -14,7 +14,10 @@ export interface ChatHistory {
   timestamp: Date;
 }
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:streamGenerateContent';
+// Hardcoded configuration
+const GEMINI_API_KEY = 'AIzaSyArOixZry2rNAvX4DGYceJFWWocfJcsZ0Y';
+const GEMINI_MODEL = 'gemini-2.0-flash';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent`;
 
 export const useGemini = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,13 +25,9 @@ export const useGemini = () => {
 
   const generateResponse = useCallback(async (
     messages: Message[],
-    apiKey: string,
     systemPrompt: string,
     onChunk?: (chunk: string) => void
   ): Promise<string> => {
-    if (!apiKey) {
-      throw new Error('API key is required');
-    }
 
     setIsLoading(true);
     setError(null);
@@ -47,7 +46,7 @@ export const useGemini = () => {
         });
       }
 
-      const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+      const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Key, MessageSquare, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, MessageSquare, Trash2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,28 +14,23 @@ interface SettingsProps {
 }
 
 export const Settings: React.FC<SettingsProps> = ({ onBack, onClearHistory }) => {
-  const [apiKey, setApiKey] = useState('');
   const [systemPrompt, setSystemPrompt] = useState('');
-  const [showApiKey, setShowApiKey] = useState(false);
   const { toast } = useToast();
 
   // Load settings on mount
   useEffect(() => {
-    const savedApiKey = localStorage.getItem('gemini-api-key') || '';
     const savedSystemPrompt = localStorage.getItem('system-prompt') || 
       'You are a helpful AI assistant. Provide clear, accurate, and helpful responses. When providing code examples, use proper syntax highlighting and explain the code clearly.';
     
-    setApiKey(savedApiKey);
     setSystemPrompt(savedSystemPrompt);
   }, []);
 
   const handleSave = () => {
-    localStorage.setItem('gemini-api-key', apiKey);
     localStorage.setItem('system-prompt', systemPrompt);
     
     toast({
       title: "Settings saved",
-      description: "Your configuration has been updated successfully.",
+      description: "Your system prompt has been updated successfully.",
     });
   };
 
@@ -49,11 +43,6 @@ export const Settings: React.FC<SettingsProps> = ({ onBack, onClearHistory }) =>
     });
   };
 
-  const maskApiKey = (key: string) => {
-    if (!key) return '';
-    if (key.length <= 8) return '•'.repeat(key.length);
-    return key.slice(0, 4) + '•'.repeat(key.length - 8) + key.slice(-4);
-  };
 
   return (
     <motion.div
@@ -79,60 +68,35 @@ export const Settings: React.FC<SettingsProps> = ({ onBack, onClearHistory }) =>
         </div>
 
         <div className="space-y-6">
-          {/* API Configuration */}
+          {/* AI Model Info */}
           <Card className="shadow-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Key className="h-5 w-5" />
-                API Configuration
+                <Sparkles className="h-5 w-5" />
+                AI Model Information
               </CardTitle>
               <CardDescription>
-                Configure your Google Gemini API key to enable AI responses
+                Your AI assistant is powered by Google Gemini 2.0 Flash
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="api-key">Google Gemini API Key</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="api-key"
-                    type={showApiKey ? "text" : "password"}
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="Enter your API key..."
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="px-3"
-                  >
-                    {showApiKey ? "Hide" : "Show"}
-                  </Button>
-                </div>
-                {apiKey && (
-                  <p className="text-xs text-muted-foreground">
-                    Current key: {maskApiKey(apiKey)}
-                  </p>
-                )}
-              </div>
-
               <Alert>
-                <Key className="h-4 w-4" />
+                <Sparkles className="h-4 w-4" />
                 <AlertDescription>
-                  Get your API key from the{' '}
-                  <a 
-                    href="https://makersuite.google.com/app/apikey" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    Google AI Studio
-                  </a>
-                  . Your key is stored locally and never sent to our servers.
+                  This assistant uses <strong>Google Gemini 2.0 Flash</strong> model for fast, intelligent responses. 
+                  The API key is preconfigured and ready to use.
                 </AlertDescription>
               </Alert>
+              
+              <div className="bg-muted/50 rounded-lg p-4">
+                <h4 className="text-sm font-medium mb-2">Model Capabilities:</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Advanced reasoning and problem-solving</li>
+                  <li>• Code generation and debugging</li>
+                  <li>• Multi-language support</li>
+                  <li>• Real-time streaming responses</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
 

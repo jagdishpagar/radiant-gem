@@ -31,15 +31,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
     getCurrentChat,
   } = useChatHistory();
 
-  // Get settings from localStorage
-  const getSettings = () => {
-    const apiKey = localStorage.getItem('gemini-api-key') || '';
-    const systemPrompt = localStorage.getItem('system-prompt') || 'You are a helpful AI assistant. Provide clear, accurate, and helpful responses.';
-    return { apiKey, systemPrompt };
+  // Get system prompt from localStorage
+  const getSystemPrompt = () => {
+    return localStorage.getItem('system-prompt') || 'You are a helpful AI assistant. Provide clear, accurate, and helpful responses. When providing code examples, use proper syntax highlighting and explain the code clearly.';
   };
 
   const currentChat = getCurrentChat();
-  const { apiKey, systemPrompt } = getSettings();
+  const systemPrompt = getSystemPrompt();
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -52,10 +50,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
   }, [currentChat?.messages, isTyping, currentResponse]);
 
   const handleSendMessage = async (content: string) => {
-    if (!apiKey) {
-      onOpenSettings();
-      return;
-    }
 
     let chatId = currentChatId;
     if (!chatId) {
@@ -81,7 +75,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
       
       const fullResponse = await generateResponse(
         messages,
-        apiKey,
         systemPrompt,
         (chunk) => {
           setCurrentResponse(prev => prev + chunk);
@@ -134,14 +127,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
         Ask questions, get help with coding, writing, or anything else you need.
       </p>
 
-      {!apiKey && (
-        <Alert className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Please configure your API key in settings to start chatting.
-          </AlertDescription>
-        </Alert>
-      )}
+      <div className="flex flex-wrap gap-2 justify-center">
+        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+          Powered by Google Gemini 2.0 Flash
+        </span>
+      </div>
     </motion.div>
   );
 
@@ -219,7 +209,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
         {/* Chat Input */}
         <ChatInput
           onSendMessage={handleSendMessage}
-          disabled={!apiKey}
+          disabled={false}
           isLoading={isLoading}
         />
       </div>
