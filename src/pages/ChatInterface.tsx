@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Sparkles } from 'lucide-react';
 import { ChatSidebar } from '@/components/ChatSidebar';
@@ -40,14 +40,33 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
   const systemPrompt = getSystemPrompt();
 
   // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
+  const scrollToBottom = useCallback((smooth = true) => {
     if (scrollAreaRef.current) {
       const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (scrollElement) {
-        scrollElement.scrollTop = scrollElement.scrollHeight;
+        if (smooth) {
+          scrollElement.scrollTo({
+            top: scrollElement.scrollHeight,
+            behavior: 'smooth'
+          });
+        } else {
+          scrollElement.scrollTop = scrollElement.scrollHeight;
+        }
       }
     }
-  }, [currentChat?.messages, isTyping, currentResponse]);
+  }, []);
+
+  // Auto-scroll when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [currentChat?.messages, scrollToBottom]);
+
+  // Auto-scroll when typing or response is updating
+  useEffect(() => {
+    if (isTyping || currentResponse) {
+      scrollToBottom();
+    }
+  }, [isTyping, currentResponse, scrollToBottom]);
 
   const handleSendMessage = async (content: string) => {
 
