@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface SettingsProps {
   onBack: () => void;
@@ -48,9 +49,10 @@ export const Settings: React.FC<SettingsProps> = ({ onBack, onClearHistory }) =>
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-gradient-background p-4"
+      className="h-screen bg-gradient-background"
     >
-      <div className="max-w-2xl mx-auto">
+      <ScrollArea className="h-full">
+        <div className="max-w-2xl mx-auto p-4">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button 
@@ -166,7 +168,8 @@ export const Settings: React.FC<SettingsProps> = ({ onBack, onClearHistory }) =>
             </Button>
           </div>
         </div>
-      </div>
+        </div>
+      </ScrollArea>
     </motion.div>
   );
 };

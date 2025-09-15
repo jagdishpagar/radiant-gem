@@ -11,7 +11,7 @@ const Index = () => {
   const handleBackToChat = () => setCurrentView('chat');
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className={currentView === 'chat' ? 'h-screen overflow-hidden' : 'min-h-screen overflow-auto'}>
       {currentView === 'chat' ? (
         <ChatInterface onOpenSettings={handleOpenSettings} />
       ) : (
