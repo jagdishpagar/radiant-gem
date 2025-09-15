@@ -61,37 +61,78 @@ export const useGemini = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || 'Failed to generate response');
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error?.message || 'Failed to generate response');
       }
 
+      let fullResponse = '';
+      const contentType = response.headers.get('content-type') || '';
+
+      // Case 1: API returned JSON (array of chunk objects or single object)
+      if (contentType.includes('application/json')) {
+        const data = await response.json();
+
+        const appendFromChunk = (chunkAny: any) => {
+          try {
+            const candidate = chunkAny?.candidates?.[0];
+            const parts = candidate?.content?.parts || [];
+            for (const part of parts) {
+              if (typeof part?.text === 'string' && part.text.length > 0) {
+                fullResponse += part.text;
+                onChunk?.(part.text);
+              }
+            }
+          } catch (_) {
+            // ignore malformed chunk
+          }
+        };
+
+        if (Array.isArray(data)) {
+          for (const item of data) appendFromChunk(item);
+        } else {
+          appendFromChunk(data);
+        }
+
+        return fullResponse;
+      }
+
+      // Case 2: Streaming response (SSE-like with `data:` lines)
       const reader = response.body?.getReader();
       if (!reader) {
         throw new Error('No response body');
       }
 
-      let fullResponse = '';
       const decoder = new TextDecoder();
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        // Keep the last partial line in buffer
+        buffer = lines.pop() || '';
 
         for (const line of lines) {
-          if (line.trim() && line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                const text = data.candidates[0].content.parts[0].text;
-                fullResponse += text;
-                onChunk?.(text);
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          let payload = trimmed;
+          if (payload.startsWith('data: ')) payload = payload.slice(6);
+
+          try {
+            const data = JSON.parse(payload);
+            const candidate = data?.candidates?.[0];
+            const parts = candidate?.content?.parts || [];
+            for (const part of parts) {
+              if (typeof part?.text === 'string' && part.text.length > 0) {
+                fullResponse += part.text;
+                onChunk?.(part.text);
               }
-            } catch (e) {
-              // Ignore JSON parsing errors for incomplete chunks
             }
+          } catch {
+            // Not a complete JSON object yet; continue accumulating
           }
         }
       }
