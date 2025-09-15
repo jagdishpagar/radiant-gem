@@ -19,7 +19,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
   const [isTyping, setIsTyping] = useState(false);
   const [currentResponse, setCurrentResponse] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
+  const bottomRef = useRef<HTMLDivElement>(null);
+
   const { generateResponse, isLoading, error } = useGemini();
   const {
     chatHistory,
@@ -41,18 +42,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = useCallback((smooth = true) => {
-    if (scrollAreaRef.current) {
-      const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollElement) {
-        if (smooth) {
-          scrollElement.scrollTo({
-            top: scrollElement.scrollHeight,
-            behavior: 'smooth'
-          });
-        } else {
-          scrollElement.scrollTop = scrollElement.scrollHeight;
-        }
-      }
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'end' });
     }
   }, []);
 
@@ -174,7 +165,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
       />
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 min-h-0">
         {/* Mobile Header with Menu Button */}
         <div className="md:hidden bg-background/95 backdrop-blur-sm border-b border-border p-4 flex items-center justify-between">
           <h1 className="text-lg font-semibold text-foreground">AI Assistant</h1>
@@ -188,9 +179,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
           </button>
         </div>
         {currentChat && currentChat.messages.length > 0 ? (
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col min-h-0">
             {/* Messages */}
-            <ScrollArea ref={scrollAreaRef} className="flex-1 bg-chat-background">
+            <ScrollArea ref={scrollAreaRef} className="flex-1 min-h-0 bg-chat-background">
               <div className="max-w-4xl mx-auto py-6">
                 <AnimatePresence>
                   {currentChat.messages.map((message, index) => (
@@ -226,6 +217,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
                     </motion.div>
                   )}
                 </AnimatePresence>
+                <div ref={bottomRef} className="h-0" />
               </div>
             </ScrollArea>
 
