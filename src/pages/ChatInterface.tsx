@@ -15,7 +15,7 @@ interface ChatInterfaceProps {
 }
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // Start with sidebar open
   const [isTyping, setIsTyping] = useState(false);
   const [currentResponse, setCurrentResponse] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -100,12 +100,18 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
 
   const handleNewChat = () => {
     createNewChat();
-    setSidebarOpen(false);
+    // Keep sidebar open on desktop, close on mobile
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
   };
 
   const handleSelectChat = (chatId: string) => {
     setCurrentChatId(chatId);
-    setSidebarOpen(false);
+    // Keep sidebar open on desktop, close on mobile
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
   };
 
   const EmptyState = () => (
@@ -136,7 +142,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
   );
 
   return (
-    <div className="flex h-screen bg-gradient-background">
+    <div className="flex h-screen bg-gradient-background relative">
       <ChatSidebar
         chatHistory={chatHistory}
         currentChatId={currentChatId}
@@ -150,8 +156,20 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile Header with Menu Button */}
+        <div className="md:hidden bg-background/95 backdrop-blur-sm border-b border-border p-4 flex items-center justify-between">
+          <h1 className="text-lg font-semibold text-foreground">AI Assistant</h1>
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
         {currentChat && currentChat.messages.length > 0 ? (
-          <>
+          <div className="flex-1 flex flex-col">
             {/* Messages */}
             <ScrollArea ref={scrollAreaRef} className="flex-1 bg-chat-background">
               <div className="max-w-4xl mx-auto py-6">
@@ -201,9 +219,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
                 </Alert>
               </div>
             )}
-          </>
+          </div>
         ) : (
-          <EmptyState />
+          <div className="flex-1">
+            <EmptyState />
+          </div>
         )}
 
         {/* Chat Input */}

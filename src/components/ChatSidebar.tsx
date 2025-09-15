@@ -72,24 +72,30 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Mobile toggle button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onToggle}
-        className="fixed top-4 left-4 z-50 md:hidden shadow-soft bg-background/80 backdrop-blur-sm"
-      >
-        {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-      </Button>
+      {/* Mobile toggle button - only show when sidebar is closed */}
+      {!isOpen && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onToggle}
+          className="fixed top-4 left-4 z-50 md:hidden shadow-soft bg-primary/90 text-white backdrop-blur-sm hover:bg-primary"
+        >
+          <Menu className="h-4 w-4" />
+        </Button>
+      )}
 
       {/* Sidebar */}
       <motion.aside
         initial={false}
-        animate={{ x: isOpen ? 0 : '-100%' }}
+        animate={{ 
+          x: isOpen ? 0 : '-100%',
+          opacity: isOpen ? 1 : 0 
+        }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
         className={cn(
           "fixed md:relative top-0 left-0 h-full w-80 bg-sidebar-background border-r border-border z-40",
-          "md:translate-x-0 md:block"
+          "md:translate-x-0 md:opacity-100", // Always visible on desktop
+          isOpen ? "block" : "hidden md:block" // Hidden on mobile when closed, always visible on desktop
         )}
       >
         <div className="flex flex-col h-full">
