@@ -2,41 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Personal AI Assistant Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Main Background */
+    --background: 240 10% 98%;
     --foreground: 222.2 84% 4.9%;
 
+    /* Chat Interface */
+    --chat-background: 240 8% 96%;
+    --sidebar-background: 240 5% 94%;
+    --user-message: 261 73% 52%;
+    --user-message-foreground: 0 0% 100%;
+    --assistant-message: 0 0% 100%;
+    --assistant-message-foreground: 222.2 84% 4.9%;
+
+    /* Interactive Elements */
+    --primary: 261 73% 52%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 261 73% 65%;
+
+    --secondary: 240 5% 94%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 214 100% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* UI Elements */
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
+    --muted: 240 5% 94%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
     --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --input: 0 0% 100%;
+    --ring: 261 73% 52%;
 
-    --radius: 0.5rem;
+    /* Design System Extensions */
+    --gradient-primary: linear-gradient(135deg, hsl(261 73% 52%), hsl(261 73% 65%));
+    --gradient-background: linear-gradient(135deg, hsl(240 10% 98%), hsl(240 8% 96%));
+    --gradient-chat: linear-gradient(to bottom, hsl(240 8% 96%), hsl(240 5% 94%));
+    
+    --shadow-soft: 0 2px 10px hsl(222.2 84% 4.9% / 0.05);
+    --shadow-message: 0 1px 3px hsl(222.2 84% 4.9% / 0.1);
+    --shadow-primary: 0 4px 20px hsl(261 73% 52% / 0.25);
+
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +78,54 @@ All colors MUST be HSL.
   }
 
   .dark {
+    /* Main Background */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
+    /* Chat Interface */
+    --chat-background: 222.2 75% 8%;
+    --sidebar-background: 222.2 80% 6%;
+    --user-message: 261 73% 52%;
+    --user-message-foreground: 0 0% 100%;
+    --assistant-message: 217.2 32.6% 17.5%;
+    --assistant-message-foreground: 210 40% 98%;
+
+    /* Interactive Elements */
+    --primary: 261 73% 52%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 261 73% 65%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --accent: 214 100% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* UI Elements */
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 261 73% 52%;
+
+    /* Design System Extensions */
+    --gradient-primary: linear-gradient(135deg, hsl(261 73% 52%), hsl(261 73% 65%));
+    --gradient-background: linear-gradient(135deg, hsl(222.2 84% 4.9%), hsl(222.2 75% 8%));
+    --gradient-chat: linear-gradient(to bottom, hsl(222.2 75% 8%), hsl(222.2 80% 6%));
+    
+    --shadow-soft: 0 2px 10px hsl(0 0% 0% / 0.2);
+    --shadow-message: 0 1px 3px hsl(0 0% 0% / 0.3);
+    --shadow-primary: 0 4px 20px hsl(261 73% 52% / 0.4);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +143,82 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    background: var(--gradient-background);
+  }
+
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+@layer components {
+  /* Chat Message Animations */
+  .message-enter {
+    animation: messageSlideIn 0.3s ease-out;
+  }
+
+  .typing-indicator {
+    animation: typingPulse 1.5s infinite;
+  }
+
+  /* Beautiful Gradients */
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .shadow-primary {
+    box-shadow: var(--shadow-primary);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-message {
+    box-shadow: var(--shadow-message);
+  }
+
+  /* Smooth Transitions */
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typingPulse {
+  0%, 60%, 100% {
+    opacity: 0.4;
+  }
+  30% {
+    opacity: 1;
   }
 }

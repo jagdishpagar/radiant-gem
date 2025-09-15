@@ -19,9 +19,19 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        /* Chat Interface Colors */
+        "chat-background": "hsl(var(--chat-background))",
+        "sidebar-background": "hsl(var(--sidebar-background))",
+        "user-message": "hsl(var(--user-message))",
+        "user-message-foreground": "hsl(var(--user-message-foreground))",
+        "assistant-message": "hsl(var(--assistant-message))",
+        "assistant-message-foreground": "hsl(var(--assistant-message-foreground))",
+        
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -57,6 +67,20 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      boxShadow: {
+        'soft': 'var(--shadow-soft)',
+        'message': 'var(--shadow-message)',
+        'primary': 'var(--shadow-primary)',
+      },
+      backgroundImage: {
+        'gradient-primary': 'var(--gradient-primary)',
+        'gradient-background': 'var(--gradient-background)',
+        'gradient-chat': 'var(--gradient-chat)',
+      },
+      transitionTimingFunction: {
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
       borderRadius: {
         lg: "var(--radius)",

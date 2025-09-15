@@ -1,12 +1,25 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState } from 'react';
+import { ChatInterface } from './ChatInterface';
+import { Settings } from './Settings';
+import { useChatHistory } from '@/hooks/useChatHistory';
 
 const Index = () => {
+  const [currentView, setCurrentView] = useState<'chat' | 'settings'>('chat');
+  const { clearAllHistory } = useChatHistory();
+
+  const handleOpenSettings = () => setCurrentView('settings');
+  const handleBackToChat = () => setCurrentView('chat');
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="h-screen overflow-hidden">
+      {currentView === 'chat' ? (
+        <ChatInterface onOpenSettings={handleOpenSettings} />
+      ) : (
+        <Settings 
+          onBack={handleBackToChat} 
+          onClearHistory={clearAllHistory}
+        />
+      )}
     </div>
   );
 };
