@@ -7,9 +7,10 @@ import { MarkdownRenderer } from './MarkdownRenderer';
 interface ChatMessageProps {
   message: Message;
   isLatest?: boolean;
+  showCursor?: boolean;
 }
 
-export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLatest }) => {
+export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLatest, showCursor }) => {
   const isUser = message.role === 'user';
 
   return (
@@ -41,8 +42,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLatest }) =
           {isUser ? (
             <p className="whitespace-pre-wrap break-words">{message.content}</p>
           ) : (
-            <div className="prose prose-sm max-w-none dark:prose-invert">
+            <div className="prose prose-sm max-w-none dark:prose-invert relative">
               <MarkdownRenderer content={message.content} />
+              {showCursor && (
+                <span className="inline-block w-2 h-4 align-baseline bg-current/50 ml-0.5 animate-pulse rounded-[1px]" />
+              )}
             </div>
           )}
         </div>
