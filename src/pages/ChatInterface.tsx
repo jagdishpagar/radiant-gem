@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Sparkles } from 'lucide-react';
 import { ChatSidebar } from '@/components/ChatSidebar';
 import { ChatMessage } from '@/components/ChatMessage';
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { ChatInput } from '@/components/ChatInput';
 import { TypingIndicator } from '@/components/TypingIndicator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -21,7 +22,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { generateResponse, isLoading, error } = useGemini();
+  const { generateResponse, isLoading, isStreaming, error, stopStreaming } = useGemini();
   const {
     chatHistory,
     currentChatId,
@@ -34,7 +35,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
 
   // Get system prompt from localStorage
   const getSystemPrompt = () => {
-    return localStorage.getItem('system-prompt') || 'You are a helpful AI assistant. Provide clear, accurate, and helpful responses. When providing code examples, use proper syntax highlighting and explain the code clearly.';
+    return localStorage.getItem('system-prompt') || 'You are a helpful AI assistant created by Ketan.When asked about yourself, always say you are ai assistant, developed by Ketan. Give clear and accurate answers. For code, show proper syntax highlighting and short explanations.';
   };
 
   const currentChat = getCurrentChat();
@@ -100,8 +101,18 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
       };
       addMessageToChat(chatId, aiMessage);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to generate response:', error);
+      if (error && (error as any).__aborted) {
+        // Show stopped message bubble
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: 'Response stopped. Try again.',
+          timestamp: new Date(),
+        };
+        addMessageToChat(chatId!, aiMessage);
+      }
     } finally {
       setIsTyping(false);
       setCurrentResponse('');
@@ -139,13 +150,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
       </h2>
       
       <p className="text-muted-foreground max-w-md mb-6 leading-relaxed">
-        Start a conversation with your personal AI assistant powered by Google Gemini 2.0. 
+        Start a conversation with your personal AI assistant powered by Ketan Abhang. 
         Ask questions, get help with coding, writing, or anything else you need.
       </p>
 
       <div className="flex flex-wrap gap-2 justify-center">
         <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-          Powered by Google Gemini 2.0 Flash
+          Powered by Ketan vikas Abhang
         </span>
       </div>
     </motion.div>
@@ -209,8 +220,12 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
                       </div>
                       <div className="max-w-[80%]">
                         <div className="bg-assistant-message text-assistant-message-foreground rounded-2xl px-4 py-3 shadow-message">
-                          <div className="prose prose-sm max-w-none dark:prose-invert">
-                            {currentResponse}
+                          <div className="prose prose-sm max-w-none dark:prose-invert relative">
+                            {/* Progressive markdown rendering with blinking cursor */}
+                            <MarkdownRenderer content={currentResponse} />
+                            {isStreaming && (
+                              <span className="inline-block w-2 h-4 align-baseline bg-current/50 ml-0.5 animate-pulse rounded-[1px]" />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -241,7 +256,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
         <ChatInput
           onSendMessage={handleSendMessage}
           disabled={false}
-          isLoading={isLoading}
+          isLoading={isLoading || isStreaming}
+          onStop={stopStreaming}
         />
       </div>
     </div>
