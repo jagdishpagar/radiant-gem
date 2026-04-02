@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Square } from 'lucide-react';
+import { Send, Square, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   disabled?: boolean;
   isLoading?: boolean;
   onStop?: () => void;
+  /** When true, uses Google Grounding Search for real-time/live data */
+  liveMode?: boolean;
+  onLiveModeChange?: (enabled: boolean) => void;
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({
@@ -16,6 +20,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   disabled = false,
   isLoading = false,
   onStop,
+  liveMode = false,
+  onLiveModeChange,
 }) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -52,6 +58,28 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     >
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
         <div className="flex items-end gap-3">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant={liveMode ? 'default' : 'outline'}
+                  size="sm"
+                  className={`h-11 px-3 shadow-soft shrink-0 ${liveMode ? 'gradient-primary text-white shadow-primary' : ''}`}
+                  onClick={() => onLiveModeChange?.(!liveMode)}
+                  disabled={disabled || isLoading}
+                >
+                  <Radio className="h-4 w-4 mr-1.5" />
+                  Live
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px]">
+                {liveMode
+                  ? 'Google Search is on — answers use real-time web data'
+                  : 'Turn on to get answers using real-time Google Search'}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div className="flex-1 relative">
             <Textarea
               ref={textareaRef}
@@ -110,7 +138,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               AI is thinking...
             </span>
           ) : (
-            'Press Enter to send, Shift+Enter for new line'
+            <span>
+              {liveMode && <span className="text-primary font-medium">Live search on · </span>}
+              Press Enter to send, Shift+Enter for new line
+            </span>
           )}
         </div>
       </form>

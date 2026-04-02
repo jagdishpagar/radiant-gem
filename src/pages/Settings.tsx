@@ -78,14 +78,14 @@ export const Settings: React.FC<SettingsProps> = ({ onBack, onClearHistory }) =>
                 AI Model Information
               </CardTitle>
               <CardDescription>
-                Your AI assistant is powered by Google Gemini 2.0 Flash
+                Your AI assistant is powered by Jagdish Pagar
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Alert>
                 <Sparkles className="h-4 w-4" />
                 <AlertDescription>
-                  This assistant uses <strong>Google Gemini 2.0 Flash</strong> model for fast, intelligent responses. 
+                  This assistant uses <strong>Jagdish Pagar</strong> model for fast, intelligent responses. 
                   The API key is preconfigured and ready to use.
                 </AlertDescription>
               </Alert>

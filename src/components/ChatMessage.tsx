@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Bot, User } from 'lucide-react';
-import { Message } from '@/hooks/useGemini';
+import { Message } from '@/hooks/useOpenAI';
 import { MarkdownRenderer } from './MarkdownRenderer';
 
 interface ChatMessageProps {

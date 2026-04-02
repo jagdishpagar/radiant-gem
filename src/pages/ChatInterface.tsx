@@ -8,7 +8,7 @@ import { ChatInput } from '@/components/ChatInput';
 import { TypingIndicator } from '@/components/TypingIndicator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useGemini, Message } from '@/hooks/useGemini';
+import { useOpenAI, Message } from '@/hooks/useOpenAI';
 import { useChatHistory } from '@/hooks/useChatHistory';
 
 interface ChatInterfaceProps {
@@ -19,10 +19,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
   const [sidebarOpen, setSidebarOpen] = useState(true); // Start with sidebar open
   const [isTyping, setIsTyping] = useState(false);
   const [currentResponse, setCurrentResponse] = useState('');
+  const [liveMode, setLiveMode] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { generateResponse, isLoading, isStreaming, error, stopStreaming } = useGemini();
+  const { generateResponse, isLoading, isStreaming, error, stopStreaming } = useOpenAI();
   const {
     chatHistory,
     currentChatId,
@@ -35,7 +36,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
 
   // Get system prompt from localStorage
   const getSystemPrompt = () => {
-    return localStorage.getItem('system-prompt') || 'You are a helpful AI assistant created by Ketan.When asked about yourself, always say you are ai assistant, developed by Ketan. Give clear and accurate answers. For code, show proper syntax highlighting and short explanations.';
+    return localStorage.getItem('system-prompt') || 'You are a helpful AI assistant created by Jagdish. When asked about yourself, always say you are ai assistant, developed by Jagdish. Give clear and accurate answers. For code, show proper syntax highlighting and short explanations.';
   };
 
   const currentChat = getCurrentChat();
@@ -89,7 +90,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
         systemPrompt,
         (chunk) => {
           setCurrentResponse(prev => prev + chunk);
-        }
+        },
+        liveMode
       );
 
       // Add AI response
@@ -150,13 +152,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
       </h2>
       
       <p className="text-muted-foreground max-w-md mb-6 leading-relaxed">
-        Start a conversation with your personal AI assistant powered by Ketan Abhang. 
+        Start a conversation with your personal AI assistant powered by  Jagdish Pagar. 
         Ask questions, get help with coding, writing, or anything else you need.
       </p>
 
       <div className="flex flex-wrap gap-2 justify-center">
         <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-          Powered by Ketan vikas Abhang
+          Powered by  Jagdish Pagar
         </span>
       </div>
     </motion.div>
@@ -258,6 +260,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onOpenSettings }) 
           disabled={false}
           isLoading={isLoading || isStreaming}
           onStop={stopStreaming}
+          liveMode={liveMode}
+          onLiveModeChange={setLiveMode}
         />
       </div>
     </div>

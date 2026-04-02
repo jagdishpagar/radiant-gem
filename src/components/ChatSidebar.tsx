@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTheme } from '@/contexts/ThemeContext';
-import { ChatHistory } from '@/hooks/useGemini';
+import { ChatHistory } from '@/hooks/useOpenAI';
 import { cn } from '@/lib/utils';
 
 interface ChatSidebarProps {
@@ -201,7 +201,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
           {/* Footer */}
           <div className="p-4 border-t border-border">
             <p className="text-xs text-muted-foreground text-center">
-              Powered by Google Gemini 2.0
+              Powered by Jagdish Pagar
             </p>
           </div>
         </div>
